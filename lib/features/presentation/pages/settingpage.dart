@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:progress/featues/presentation/pages/aboutpage.dart';
-import 'package:progress/featues/presentation/pages/notifipage.dart';
-import 'package:progress/featues/presentation/pages/privacypage.dart';
+import 'package:progress/features/presentation/pages/aboutpage.dart';
+import 'package:progress/features/presentation/pages/notifipage.dart';
+import 'package:progress/features/presentation/pages/privacypage.dart';
 
 class Settingpage extends StatefulWidget {
   const Settingpage({super.key});

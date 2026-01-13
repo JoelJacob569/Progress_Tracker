@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:progress/featues/presentation/pages/addtrack.dart';
-import 'package:progress/featues/presentation/pages/progresspage.dart';
-import 'package:progress/featues/presentation/pages/settingpage.dart';
-import 'package:progress/featues/presentation/widgets/customcon.dart';
+import 'package:progress/features/presentation/pages/addtrack.dart';
+import 'package:progress/features/presentation/pages/progresspage.dart';
+import 'package:progress/features/presentation/pages/settingpage.dart';
+import 'package:progress/core/widgets/customcon.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});

@@ -38,6 +38,14 @@ class _ProgresspageState extends State<Progresspage> {
   String _formatDate(DateTime d) =>
       '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
+  late final DateTime _createdAt;
+
+  @override
+  void initState() {
+    super.initState();
+    _createdAt = DateTime.now();
+  }
+
   List<DateTime> _generateRange(DateTime start, DateTime end) {
     final List<DateTime> days = [];
     DateTime cur = DateTime(start.year, start.month, start.day);
@@ -155,12 +163,33 @@ class _ProgresspageState extends State<Progresspage> {
     super.dispose();
   }
 
-  // new helper: only allow current date to be selected for marking as done
-  bool _isOnlyTodaySelectable(DateTime date) {
+  bool _isSelectableDate(DateTime date, List<DateTime>? range) {
     final today = DateTime.now();
-    return date.year == today.year &&
-        date.month == today.month &&
-        date.day == today.day;
+
+    final normDate = DateTime(date.year, date.month, date.day);
+    final normToday = DateTime(today.year, today.month, today.day);
+    final normCreated = DateTime(
+      _createdAt.year,
+      _createdAt.month,
+      _createdAt.day,
+    );
+
+    // ❌ never allow future dates
+    if (normDate.isAfter(normToday)) return false;
+
+    // ❌ outside duration range
+    if (range != null &&
+        (normDate.isBefore(range.first) || normDate.isAfter(range.last))) {
+      return false;
+    }
+
+    // ✅ allow backdating ONLY on creation day
+    if (normCreated.isAtSameMomentAs(normToday)) {
+      return true; // any past date in range is allowed
+    }
+
+    // ✅ otherwise only today
+    return normDate.isAtSameMomentAs(normToday);
   }
 
   @override
@@ -207,7 +236,7 @@ class _ProgresspageState extends State<Progresspage> {
                         final dateToMark = _selectedDate ?? now;
 
                         // ensure only current date can be marked
-                        if (!_isOnlyTodaySelectable(dateToMark)) {
+                        if (!_isSelectableDate(dateToMark, range)) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -494,7 +523,10 @@ class _ProgresspageState extends State<Progresspage> {
                                     onTap: inRange
                                         ? () {
                                             // allow selection only for current date
-                                            if (!_isOnlyTodaySelectable(date)) {
+                                            if (!_isSelectableDate(
+                                              date,
+                                              range,
+                                            )) {
                                               ScaffoldMessenger.of(
                                                 context,
                                               ).showSnackBar(
